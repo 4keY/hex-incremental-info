@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upgrade Tree</title>
+  <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #1f1f1f;
+      font-family: 'Fredoka One', sans-serif;
+    }
+
+    #viewport {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+    }
+
+    #viewport:active {
+      cursor: grabbing;
+    }
+
+    #hex-grid {
+      position: absolute;
+      transform-origin: 0 0;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hex {
+      width: 300px;
+      height: 259.8px;
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+      background:
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 86.6"><polygon points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" fill="none" stroke="aqua" stroke-width="6"/></svg>') center/100% 100% no-repeat,
+        #282929;
+
+      position: absolute;
+      box-shadow: 0 0 10px #c4f9ff;
+      z-index: 1;
+    }
+
+    #\[0\,0\] {
+      background:
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 86.6"><polygon points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" fill="none" stroke="DarkSlateGray" stroke-width="6"/></svg>') center/100% 100% no-repeat,
+        #101822;
+        box-shadow: 0 0 10px #c4f9ff;
+    }
+
+    .hex-content {
+      width: 100%;
+      height: 100%;
+      display:flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin: 1%;
+    }
+
+    .hex-title {
+      width: 45%;
+      height: 20%;
+      color: #ffffff;
+      -webkit-text-stroke: 1px black;
+    }
+
+    .hex-desc {
+      width: 65%;
+      height: 50%;
+      color: #f5c064;
+      -webkit-text-stroke: 1px black;
+    }
+
+    .hex-desc2 {
+      width: 60%;
+      height: 15%;
+      font-weight: bold;
+      color: #2ccc00;
+      -webkit-text-stroke: 0.5px black;
+    }
+
+    .cost {
+      width: 45%;
+      height: 15%;
+      font-weight: bold;
+      -webkit-text-stroke: 1px black;
+      background-color: rgba(0.2, 0.2, 0.2, 0.5);
+    }
+    .cost-hex { color: #f30004; }
+    .cost-pent { color: #2eff3c; }
+    .cost-quad { color: #9e00ec; }
+    .cost-tc   { color: #2de3ff; }
+    .cost-tri  { color: #00b7ff; }
+    .cost-tree { color: #0ba800; }
+
+    .hex-title,
+    .hex-desc,
+    .hex-desc2,
+    .cost {
+      box-sizing: content-box;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      overflow: hidden;
+      white-space: normal;
+      transform-origin: top center;
+      white-space: pre-wrap;
+
+    }
+
+  </style>
+</head>
+<body>
+  <div id="viewport">
+    <canvas id="connector-canvas"></canvas>
+    <div id="hex-grid"></div>
+  </div>
+
+  <script>
+    const viewport = document.getElementById("viewport");
+    const grid = document.getElementById("hex-grid");
+    const canvas = document.getElementById("connector-canvas");
+    const ctx = canvas.getContext("2d");
+
+    let scale = 1, offsetX = 0, offsetY = 0, isDragging = false, startX, startY;
+
+    function applyTransform() {
+      grid.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+      drawLines();
+    }
+
+    function drawLines() {
+      canvas.width = viewport.clientWidth;
+      canvas.height = viewport.clientHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "#bbb";
+      ctx.lineWidth = scale/0.02;
+
+      const hexes = grid.querySelectorAll(".hex");
+      hexes.forEach(hex => {
+        const parentId = hex.dataset.parent;
+        if (!parentId) return;
+        const parent = document.getElementById(parentId);
+        if (!parent) return;
+
+        const rect1 = hex.getBoundingClientRect();
+        const rect2 = parent.getBoundingClientRect();
+        const viewRect = viewport.getBoundingClientRect();
+
+        const x1 = rect1.left + rect1.width / 2 - viewRect.left;
+        const y1 = rect1.top + rect1.height / 2 - viewRect.top;
+        const x2 = rect2.left + rect2.width / 2 - viewRect.left;
+        const y2 = rect2.top + rect2.height / 2 - viewRect.top;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      });
+    }
+
+    viewport.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const zoomAmount = -e.deltaY * 0.001;
+      const newScale = Math.min(Math.max(scale + zoomAmount, 0.2), 3);
+      const rect = grid.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      offsetX -= mx * (newScale - scale);
+      offsetY -= my * (newScale - scale);
+      scale = newScale;
+      applyTransform();
+    });
+
+    viewport.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    viewport.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      offsetX += e.clientX - startX;
+      offsetY += e.clientY - startY;
+      startX = e.clientX;
+      startY = e.clientY;
+      applyTransform();
+    });
+
+    viewport.addEventListener("mouseup", () => isDragging = false);
+    viewport.addEventListener("mouseleave", () => isDragging = false);
+
+    function createHex(id, parentId, direction, title, description, description2, costType) {
+      const parent = document.getElementById(parentId);
+      const hex = document.createElement("div");
+      hex.className = "hex";
+      hex.id = id;
+      hex.dataset.parent = parentId;
+
+      hex.innerHTML = `
+        <div class="hex-content">
+          <div class="hex-title">${title}</div>
+          <div class="hex-desc">${description}</span></div>
+          <div class="hex-desc2">${description2}</div>
+          <div class="hex-desc cost cost-${costType.toLowerCase()}">${costType.toUpperCase()}</div>
+        </div>`;
+
+      let offsetX = 0, offsetY = 0;
+      const dx = 300;
+      const dy = 330;
+
+      if (parent) {
+        const parentX = parent.offsetLeft;
+        const parentY = parent.offsetTop;
+        switch (direction) {
+          case "top": offsetX = parentX; offsetY = parentY - dy; break;
+          case "left": offsetX = parentX - dx; offsetY = parentY - dy / 2; break;
+          case "right": offsetX = parentX + dx; offsetY = parentY - dy / 2; break;
+          default: offsetX = parentX; offsetY = parentY;
+        }
+      } else {
+        offsetX = window.innerWidth / 2 - 150;
+        offsetY = window.innerHeight - 300;
+      }
+
+      hex.style.left = `${offsetX}px`;
+      hex.style.top = `${offsetY}px`;
+
+      grid.appendChild(hex);
+
+      [
+        [".hex-title", 1],
+        [".hex-desc", 1],
+        [".hex-desc2", 1],
+        [".cost", 1]
+      ].forEach(([sel, start]) => {
+        const el = hex.querySelector(sel);
+        if (el) requestAnimationFrame(() => fitTextToContainer(el));
+      });
+
+      drawLines();
+    }
+
+    window.addEventListener("load", () => {
+      createHex("[0,0]", null, null, "", "", "", "");
+      createHex("[0,1]", "[0,0]", "top", "Sentry", "Spawns a Sentry to Collect Hex for you.", "+1", "tc");
+      createHex("[0,2]", "[0,1]", "top", "Sentry Range Upgrade", "Increase Sentry Range", "+1", "tc");
+      createHex("[0,3]", "[0,2]", "top", "Sentry Speed Upgrade", "Increase Sentry Attack Speed", "25%", "tc");
+      createHex("[0,4]", "[0,3]", "top", "Sentry Speed Upgrade", "Increase Sentry Attack Speed", "25%", "tc");
+      createHex("[0,5]", "[0,4]", "top", "Sentry Speed Upgrade", "Increase Sentry Attack Speed", "25%", "tc");
+      createHex("[0,6]", "[0,5]", "top", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[0,7]", "[0,6]", "top", "Sentry Target Upgrade", "Increase Sentry Targets", "+1", "tc");
+      createHex("[0,8]", "[0,7]", "top", "Hex Mult", "Unlocks Combat Stat Auto Buying", "", "tc");
+
+      createHex("[1,0]", "[0,0]", "right", "Base Damage Upgrade", "Unlocks Soul Combat", "", "pent");
+      createHex("[1,1]", "[1,0]", "top", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "quad");
+      createHex("[1,2]", "[0,2]", "right", "Sentry Range Upgrade", "Increase Sentry Range", "+1", "tc");
+      createHex("[1,3]", "[1,2]", "top", "Sentry Range Upgrade", "Increase Sentry Range", "+1", "tc");
+      createHex("[1,4]", "[1,3]", "top", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[1,5]", "[0,5]", "right", "Sentry Speed Upgrade", "Increase Sentry Attack Speed", "25%", "tc");
+      createHex("[1,6]", "[1,5]", "top", "Sentry Target Upgrade", "Increase Sentry Targets", "+1", "tc");
+      createHex("[1,7]", "[0,7]", "right", "Hex Auto Upgrade", "Prevent Hex Auto Buy from resetting on Hex or Pent Resets", "", "tc");
+
+      createHex("[2,0]", "[1,0]", "right", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "pent");
+      createHex("[2,1]", "[2,0]", "top", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "quad");
+      createHex("[2,2]", "[1,2]", "right", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[2,3]", "[2,2]", "top", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[2,4]", "[1,4]", "right", "Plinko Unlock", "Unlocks Plinko, Can Claim up to 100% of your last Hex Reset Pentagons when Tank Fills. This Tank also fills while offline.", "", "tc");
+      createHex("[2,5]", "[1,5]", "right", "Sentry Target Upgrade", "Increase Sentry Targets", "+1", "tc");
+
+      createHex("[3,0]", "[2,0]", "right", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "pent");
+      createHex("[3,1]", "[3,0]", "top", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "quad");
+      createHex("[3,2]", "[2,2]", "right", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[3,4]", "[2,4]", "right", "Plinko Upgrade", "Increases the Plinko Reward Claimed Reward by 100%", "", "tc");
+      createHex("[3,5]", "[3,4]", "top", "Plinko Upgrade", "Increases the Plinko Reward Claimed Reward by 100%", "", "tc");
+
+      createHex("[4,0]", "[3,0]", "right", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "pent");
+      createHex("[4,1]", "[4,0]", "top", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "quad");
+      createHex("[4,2]", "[3,2]", "right", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[4,4]", "[3,4]", "right", "Plinko Upgrade", "Increases the Plinko Reward Claimed Reward by 100%", "", "tc");
+      createHex("[4,5]", "[4,4]", "top", "Plinko Upgrade", "Increases the Plinko Reward Claimed Reward by 100%", "", "tc");
+
+      createHex("[5,0]", "[4,0]", "right", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "pent");
+      createHex("[5,1]", "[5,0]", "top", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "quad");
+
+      createHex("[6,0]", "[5,0]", "right", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "pent");
+      createHex("[6,1]", "[6,0]", "top", "Base Damage Upgrade", "Increases Base Combat Damage", "+5", "quad");
+
+      createHex("[-1,0]", "[0,0]", "left", "Time Cubes", "Unlocks Time Cube generation", "", "hex");
+      createHex("[-1,1]", "[-1,0]", "top", "Time Cube Upgrade", "Increases Time Cubes generated by", "25% per min", "tc");
+      createHex("[-1,2]", "[0,2]", "left", "Sentry Target Upgrade", "Increase Sentry Targets", "+1", "tc");
+      createHex("[-1,3]", "[-1,2]", "top", "Sentry Range Upgrade", "Increase Sentry Range", "+1", "tc");
+      createHex("[-1,4]", "[-1,3]", "top", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[-1,5]", "[0,5]", "left", "Sentry Speed Upgrade", "Increase Sentry Attack Speed", "25%", "tc");
+      createHex("[-1,6]", "[-1,5]", "top", "Sentry Target Upgrade", "Increase Sentry Targets", "+1", "tc");
+      createHex("[-1,7]", "[0,7]", "left", "MoveSpeed Upgrade", "Increases AFK Auto Walk speed by 10%", "", "tc");
+      createHex("[-1,8]", "[-1,7]", "top", "Quad Auto Buy", "Unlocks Quad Auto Buy", "", "tc");
+
+      createHex("[-2,0]", "[-1,0]", "left", "Time Cube Upgrade", "Increases Time Cubes generated by", "25% per min", "tc");
+      createHex("[-2,1]", "[-2,0]", "top", "Hex Mult", "Gives 1% HexMult per 100 Time Cubes", "", "tc");
+      createHex("[-2,2]", "[-1,2]", "left", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[-2,3]", "[-2,2]", "top", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[-2,4]", "[-2,3]", "top", "Hex Egg Upgrade", "Unlocks the ability to hatch from anywhere", "", "tc");
+      createHex("[-2,5]", "[-1,5]", "left", "Sentry Target Upgrade", "Increase Sentry Targets", "+1", "tc");
+
+      createHex("[-3,0]", "[-2,0]", "left", "Hex Upgrade", "Hex Upgrades no longer subtract the Hex cost of the upgrade when buying them", "", "quad");
+      createHex("[-3,1]", "[-3,0]", "top", "Super Hex", "Unlocks Super Hex - Each Collected Increase Hex Mult by .5%. Mult Reset on Hex and Pent Reset.", "", "quad");
+      createHex("[-3,2]", "[-2,2]", "left", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+      createHex("[-3,3]", "[-3,2]", "top", "Time Cube Upgrade", "Increases Time Cubes generated by", "25% per min", "tc");
+
+      createHex("[-4,0]", "[-3,0]", "left", "Hex Upgrade", "Hex Upgrades Never Reset from Hex or Pent Resets", "", "quad");
+      createHex("[-4,1]", "[-3,1]", "left", "Super Hex Upgrade", "Super Hex only reduced by 75% on Hex and Pent Resets", "", "tc");
+      createHex("[-4,2]", "[-3,2]", "left", "Sentry QTY Upgrade", "Increase Sentry Count by", "+1", "tc");
+
+      createHex("[-5,1]", "[-4,1]", "left", "Super Hex Upgrade", "Super Hex only reduced by 50% on Hex and Pent Resets (Replaces previous upgrade)", "", "tc");
+
+      createHex("[-6,1]", "[-5,1]", "left", "Super Hex Upgrade", "Super Hex only reduced by 25% on Hex and Pent Resets (Replaces previous upgrade)", "", "tc");
+
+      createHex("[-7,1]", "[-6,1]", "left", "Super Hex Upgrade", "Super Hex Mult no longer resets on Hex or Pent Resets", "", "tc");
+    });
+    function fitTextToContainer(el, min = 8, max = 42) {
+  let fontSize = max;
+  el.style.fontSize = fontSize + 'px';
+
+  // Force reflow
+  el.offsetHeight;
+
+  while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > min) {
+    fontSize--;
+    el.style.fontSize = fontSize + 'px';
+    el.offsetHeight; // Force reflow again after changing
+  }
+}
+function fitTextWithScale(el) {
+  el.style.fontSize = '42px';
+  el.style.transform = 'scale(1)';
+  el.style.transformOrigin = 'top center';
+
+  const containerWidth = el.offsetWidth;
+  const containerHeight = el.offsetHeight;
+  const { width, height } = el.getBoundingClientRect();
+
+  const scaleX = containerWidth / width;
+  const scaleY = containerHeight / height;
+  const scale = Math.min(scaleX, scaleY, 1);
+
+  el.style.transform = `scale(${scale})`;
+}
+  </script>
+</body>
+</html>
