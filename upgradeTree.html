@@ -46,7 +46,7 @@
       clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
       background:
         url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 86.6"><polygon points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" fill="none" stroke="aqua" stroke-width="6"/></svg>') center/100% 100% no-repeat,
-        #282929;
+        #2f3030;
 
       position: absolute;
       box-shadow: 0 0 10px #c4f9ff;
@@ -79,7 +79,8 @@
 
     .hex-desc {
       width: 65%;
-      height: 50%;
+      height: calc(50% - 3px);
+      margin-bottom: 3px;
       color: #f5c064;
       -webkit-text-stroke: 1px black;
     }
@@ -96,6 +97,7 @@
       width: 55%;
       height: 15%;
       font-weight: bold;
+      
       -webkit-text-stroke: 1px black;
       background-color: rgba(0.2, 0.2, 0.2, 0.75);
     }
@@ -111,7 +113,7 @@
     .hex-desc,
     .hex-desc2,
     .cost {
-      box-sizing: content-box;
+      box-sizing: border-box;
       padding: 0;
       margin: 0;
       text-align: center;
@@ -121,7 +123,9 @@
       white-space: pre-wrap;
 
     }
-
+    #\[0\,0\] .cost {
+      background-color: transparent
+    }
   </style>
 </head>
 <body>
@@ -147,7 +151,7 @@
       canvas.width = viewport.clientWidth;
       canvas.height = viewport.clientHeight;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "#bbb";
+      ctx.strokeStyle = "#ddd";
       ctx.lineWidth = scale/0.02;
 
       const hexes = grid.querySelectorAll(".hex");
@@ -338,34 +342,39 @@
 
       applyTransform();
     });
-    function fitTextToContainer(el, min = 8, max = 42) {
-  let fontSize = max;
-  el.style.fontSize = fontSize + 'px';
+    function fitTextToContainer(el, min = 4, max = 42) {
+      if (
+        el.classList.contains("hex-desc2") &&
+        el.textContent.trim() === "" &&
+        el.children.length === 0
+      ) {
+        el.style.height = '0%';
+        const parent = el.parentElement;
+        const hexDesc = parent.querySelector(".hex-desc");
+        if (hexDesc) {
+          hexDesc.style.height = 'calc(65% - 3px)';
+        }
+      }
+      
+      requestAnimationFrame(() => {
+        let fontSize = min;
+        el.style.fontSize = fontSize + 'px';
 
-  // Force reflow
-  el.offsetHeight;
+        while (
+          fontSize <= max &&
+          el.scrollWidth <= el.clientWidth &&
+          el.scrollHeight <= el.clientHeight
+        ) {
+          fontSize++;
+          el.style.fontSize = fontSize + 'px';
+        }
 
-  while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > min) {
-    fontSize--;
-    el.style.fontSize = fontSize + 'px';
-    el.offsetHeight; // Force reflow again after changing
-  }
-}
-function fitTextWithScale(el) {
-  el.style.fontSize = '42px';
-  el.style.transform = 'scale(1)';
-  el.style.transformOrigin = 'top center';
+        fontSize--;
+        el.style.fontSize = fontSize + 'px';
+      });
+    }
 
-  const containerWidth = el.offsetWidth;
-  const containerHeight = el.offsetHeight;
-  const { width, height } = el.getBoundingClientRect();
 
-  const scaleX = containerWidth / width;
-  const scaleY = containerHeight / height;
-  const scale = Math.min(scaleX, scaleY, 1);
-
-  el.style.transform = `scale(${scale})`;
-}
   </script>
 </body>
 </html>
