@@ -104,8 +104,8 @@
         position: absolute;
         top: 60%;
         left: 50%;
-        width: 100px;
-        height: 100px;
+        width: 90px;
+        height: 90px;
         -ms-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
         font-weight: normal;
@@ -120,10 +120,11 @@
         <h1>Reset Layers</h1>
         <div class="hexResetContainer">
             <h2 style="color: limegreen;font-weight: normal;">Hex Reset</h2>
-            <p>Resets all Hex upgrades, Level, Tier and Hexes collected</p>
-            <p style="color: #888;">(Hex upgrades don't reset if you have the Upgrade Tree upgrade bought)
-            <p>In return gives Pentagons</p>
-            <p>Current Pentagon upgrades are:</p>
+            <p>Resets all Hex upgrades, levels, tiers, and collected Hexes.</p>
+            <p style="color: #888;">(Hex upgrades don't reset if you’ve purchased the Upgrade Tree upgrade.)</p>
+            <p>In return, it gives Pentagons.</p>
+            <p>Requires at least 500 Hexagons.</p>
+            <p>The current Pentagon upgrades are:</p>
             <div class="upgrContainer">
                 <div class="upgr">
                     <h2>Pent Multiplier</h2>
@@ -163,7 +164,7 @@
                 <div class="upgr">
                     <h2>Range</h2>
                     <div class="hexUpgradeIcon">
-                        <svg width="90px" height="90px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="85px" height="85px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.41185 21.6588C9.94114 21.8006 10.4719 21.8972 11 21.9509C15.7947 22.4387 20.3717 19.3931 21.6593 14.5877C23.0887 9.25308 19.9229 3.76971 14.5882 2.34029C11.9556 1.63489 9.28684 2.04857 7.0869 3.28972M12 11.9996L5.00197 6.33546C4.57285 5.98813 3.93869 6.05182 3.63599 6.5135C3.06678 7.38163 2.62413 8.35389 2.34078 9.41136C1.37322 13.0224 2.51113 16.7015 5.00197 19.1453M7.36918 8.18416C6.51383 9.22115 6.00004 10.5503 6.00004 11.9996C6.00004 15.3133 8.68633 17.9996 12 17.9996C15.3137 17.9996 18 15.3133 18 11.9996C18 11.4818 17.9345 10.9793 17.8111 10.5M10.1029 6.30568C10.6991 6.10709 11.337 5.99955 12 5.99955C13.0929 5.99955 14.1175 6.29173 15 6.80222"  stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
                     </div>
@@ -171,7 +172,7 @@
                 <div class="upgr">
                     <h2>Spawn Time</h2>
                     <div class="hexUpgradeIcon">
-                        <svg width="95px" height="95px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="85px" height="85px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 7V12L14.5 13.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                     </div>
@@ -179,7 +180,19 @@
                 <div class="upgr">
                     <h2>Auto Buy Hex Upgrades</h2>
                     <div class="hexUpgradeIcon">
-                        
+                        <svg  fill="none" width="85px" height="85px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path  opacity="0.1" fill-rule="evenodd" clip-rule="evenodd" d="M17.7654 5.15224C17.3978 5 16.9319 5 16 5H8C7.06812 5 6.60218 5 6.23463 5.15224C5.74458 5.35523 5.35523 5.74458 5.15224 6.23463C5 6.60218 5 7.06812 5 8V16C5 16.9319 5 17.3978 5.15224 17.7654C5.35523 18.2554 5.74458 18.6448 6.23463 18.8478C6.60218 19 7.06812 19 8 19H16C16.9319 19 17.3978 19 17.7654 18.8478C18.2554 18.6448 18.6448 18.2554 18.8478 17.7654C19 17.3978 19 16.9319 19 16V8C19 7.06812 19 6.60218 18.8478 6.23463C18.6448 5.74458 18.2554 5.35523 17.7654 5.15224ZM15.25 11.9906C15.25 11.5326 15.25 11.1761 15.2304 10.8887C15.2105 10.597 15.1696 10.3583 15.0787 10.139C14.8504 9.58765 14.4124 9.14963 13.861 8.92127C13.6417 8.83043 13.403 8.78951 13.1113 8.76961C12.8239 8.75 12.4674 8.75 12.0094 8.75H11.9906C11.5326 8.75 11.1761 8.75 10.8887 8.76961C10.597 8.78951 10.3583 8.83043 10.139 8.92127C9.58765 9.14963 9.14963 9.58765 8.92127 10.139C8.83043 10.3583 8.78951 10.597 8.76961 10.8887C8.75 11.1761 8.75 11.5326 8.75 11.9906V12.0094C8.75 12.4674 8.75 12.8239 8.76961 13.1113C8.78951 13.403 8.83043 13.6417 8.92127 13.861C9.14963 14.4124 9.58765 14.8504 10.139 15.0787C10.3583 15.1696 10.597 15.2105 10.8887 15.2304C11.1761 15.25 11.5326 15.25 11.9906 15.25H12.0094C12.4674 15.25 12.8239 15.25 13.1113 15.2304C13.403 15.2105 13.6417 15.1696 13.861 15.0787C14.4124 14.8504 14.8504 14.4124 15.0787 13.861C15.1696 13.6417 15.2105 13.403 15.2304 13.1113C15.25 12.8239 15.25 12.4674 15.25 12.0094V11.9906Z"/>
+                                <path d="M5 9C5 7.11438 5 6.17157 5.58579 5.58579C6.17157 5 7.11438 5 9 5H12H15C16.8856 5 17.8284 5 18.4142 5.58579C19 6.17157 19 7.11438 19 9V12V15C19 16.8856 19 17.8284 18.4142 18.4142C17.8284 19 16.8856 19 15 19H12H9C7.11438 19 6.17157 19 5.58579 18.4142C5 17.8284 5 16.8856 5 15V12V9Z" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M9 12C9 11.0681 9 10.6022 9.15224 10.2346C9.35523 9.74458 9.74458 9.35523 10.2346 9.15224C10.6022 9 11.0681 9 12 9V9V9C12.9319 9 13.3978 9 13.7654 9.15224C14.2554 9.35523 14.6448 9.74458 14.8478 10.2346C15 10.6022 15 11.0681 15 12V12V12C15 12.9319 15 13.3978 14.8478 13.7654C14.6448 14.2554 14.2554 14.6448 13.7654 14.8478C13.3978 15 12.9319 15 12 15V15V15C11.0681 15 10.6022 15 10.2346 14.8478C9.74458 14.6448 9.35523 14.2554 9.15224 13.7654C9 13.3978 9 12.9319 9 12V12V12Z"  stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M8 5L8 3" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8 21L8 19"  stroke-width="2" stroke-linecap="round"/>
+                            <path d="M21 16L19 16"stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5 16L3 16"  stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16 5L16 3" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16 21L16 19" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M21 8L19 8" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5 8L3 8"  stroke-width="2" stroke-linecap="round"/>
+                            </svg>  
                     </div>
                 </div>
             </div>
@@ -187,10 +200,11 @@
 
         <div class="hexResetContainer">
             <h2 style="color: #aa11f7;font-weight: normal;">Pent Reset</h2>
-            <p>Resets all Pent and Hex upgrades, Level, Tier and Hexes/Pent collected</p>
-            <p style="color: #888;">(Hex upgrades don't reset if you have the Upgrade Tree upgrade bought)
-            <p>In return gives Quads</p>
-            <p>Current Quad upgrades are:</p>
+            <p>Resets all Pent and Hex upgrades, levels, tiers, and collected Hexes and Pents.</p>
+            <p style="color: #888;">(Hex upgrades don't reset if you’ve purchased the Upgrade Tree upgrade.)</p>
+            <p>In return, it gives Quads.</p>
+            <p>Requires at least 2.5T Pentagons.</p>
+            <p>The current Quad upgrades are:</p>
             <div class="upgrContainer2">
                 <div class="upgr">
                     <h2>Pent Multiplier</h2>
@@ -247,7 +261,19 @@
                 <div class="upgr">
                     <h2>Auto Buy Pent Upgrades</h2>
                     <div class="hexUpgradeIcon">
-                        
+                        <svg  fill="none" width="85px" height="85px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path  opacity="0.1" fill-rule="evenodd" clip-rule="evenodd" d="M17.7654 5.15224C17.3978 5 16.9319 5 16 5H8C7.06812 5 6.60218 5 6.23463 5.15224C5.74458 5.35523 5.35523 5.74458 5.15224 6.23463C5 6.60218 5 7.06812 5 8V16C5 16.9319 5 17.3978 5.15224 17.7654C5.35523 18.2554 5.74458 18.6448 6.23463 18.8478C6.60218 19 7.06812 19 8 19H16C16.9319 19 17.3978 19 17.7654 18.8478C18.2554 18.6448 18.6448 18.2554 18.8478 17.7654C19 17.3978 19 16.9319 19 16V8C19 7.06812 19 6.60218 18.8478 6.23463C18.6448 5.74458 18.2554 5.35523 17.7654 5.15224ZM15.25 11.9906C15.25 11.5326 15.25 11.1761 15.2304 10.8887C15.2105 10.597 15.1696 10.3583 15.0787 10.139C14.8504 9.58765 14.4124 9.14963 13.861 8.92127C13.6417 8.83043 13.403 8.78951 13.1113 8.76961C12.8239 8.75 12.4674 8.75 12.0094 8.75H11.9906C11.5326 8.75 11.1761 8.75 10.8887 8.76961C10.597 8.78951 10.3583 8.83043 10.139 8.92127C9.58765 9.14963 9.14963 9.58765 8.92127 10.139C8.83043 10.3583 8.78951 10.597 8.76961 10.8887C8.75 11.1761 8.75 11.5326 8.75 11.9906V12.0094C8.75 12.4674 8.75 12.8239 8.76961 13.1113C8.78951 13.403 8.83043 13.6417 8.92127 13.861C9.14963 14.4124 9.58765 14.8504 10.139 15.0787C10.3583 15.1696 10.597 15.2105 10.8887 15.2304C11.1761 15.25 11.5326 15.25 11.9906 15.25H12.0094C12.4674 15.25 12.8239 15.25 13.1113 15.2304C13.403 15.2105 13.6417 15.1696 13.861 15.0787C14.4124 14.8504 14.8504 14.4124 15.0787 13.861C15.1696 13.6417 15.2105 13.403 15.2304 13.1113C15.25 12.8239 15.25 12.4674 15.25 12.0094V11.9906Z"/>
+                                <path d="M5 9C5 7.11438 5 6.17157 5.58579 5.58579C6.17157 5 7.11438 5 9 5H12H15C16.8856 5 17.8284 5 18.4142 5.58579C19 6.17157 19 7.11438 19 9V12V15C19 16.8856 19 17.8284 18.4142 18.4142C17.8284 19 16.8856 19 15 19H12H9C7.11438 19 6.17157 19 5.58579 18.4142C5 17.8284 5 16.8856 5 15V12V9Z" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M9 12C9 11.0681 9 10.6022 9.15224 10.2346C9.35523 9.74458 9.74458 9.35523 10.2346 9.15224C10.6022 9 11.0681 9 12 9V9V9C12.9319 9 13.3978 9 13.7654 9.15224C14.2554 9.35523 14.6448 9.74458 14.8478 10.2346C15 10.6022 15 11.0681 15 12V12V12C15 12.9319 15 13.3978 14.8478 13.7654C14.6448 14.2554 14.2554 14.6448 13.7654 14.8478C13.3978 15 12.9319 15 12 15V15V15C11.0681 15 10.6022 15 10.2346 14.8478C9.74458 14.6448 9.35523 14.2554 9.15224 13.7654C9 13.3978 9 12.9319 9 12V12V12Z"  stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M8 5L8 3" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8 21L8 19"  stroke-width="2" stroke-linecap="round"/>
+                            <path d="M21 16L19 16"stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5 16L3 16"  stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16 5L16 3" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16 21L16 19" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M21 8L19 8" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5 8L3 8"  stroke-width="2" stroke-linecap="round"/>
+                            </svg>   
                     </div>
                 </div>
             </div>
@@ -255,11 +281,11 @@
 
         <div class="hexResetContainer">
             <h2 style="color: deepskyblue;font-weight: normal;">Quad Reset</h2>
-            <p>Resets all Pent, Hex and Quad upgrades, Level, Tier and Hexes/Pent/Quad collected</p>
-            <p style="color: #888;">(Hex upgrades don't reset if you have the Upgrade Tree upgrade bought)
-            <p>In return gives Triangles and a % of progress to next tree</p>
-            <p>Requires at least 1e42/1U quads</p>
-            <p>Current Triangle upgrades are:</p>
+            <p>Resets all Pent, Hex, and Quad upgrades, levels, tiers, and collected Hexes, Pents, and Quads.</p>
+
+            <p>In return, it gives Triangles and a percentage of progress toward the next tree.</p>
+            <p>Requires at least 1e42 (1U) Quads.</p>
+            <p>The current Triangle upgrades are:</p>
             <div class="upgrContainer3">
                 <div class="upgr">
                     <h2>Pent Multiplier</h2>
@@ -285,7 +311,7 @@
                 <div class="upgr">
                     <h2>Tri Multiplier</h2>
                     <div class="hexUpgradeIcon">
-                        <svg width="90px" height="90px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="80px" height="80px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
                             <path d="M215.97632,227.99219H40.02368a27.99977,27.99977,0,0,1-24.23291-42.02686L103.7666,33.97314h0a28.00037,28.00037,0,0,1,48.4668,0l87.97632,151.99244a27.99995,27.99995,0,0,1-24.2334,42.02661ZM124.53809,45.99609,36.562,197.98853a3.99964,3.99964,0,0,0,3.46167,6.00366H215.97632a3.99985,3.99985,0,0,0,3.46191-6.00366L131.46191,45.99609a4.00012,4.00012,0,0,0-6.92382,0Z"/>
                           </svg>
                     </div>
