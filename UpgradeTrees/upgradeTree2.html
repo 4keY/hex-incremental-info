@@ -14,7 +14,29 @@
       background: #1f1f1f;
       font-family: 'Fredoka One', sans-serif;
     }
-
+    .backgroundHex1::before {
+      content: "";
+      position: fixed;
+      width: 2000px; /* size of hex area */
+      height: 2000px;
+      top: -100%; /* adjust to move vertically */
+      right: -40%; /* adjust to move horizontally */
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 106 92.6"><polygon points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" fill="none" stroke="LimeGreen" stroke-width="1" stroke-linejoin="round"/></svg>') no-repeat center;
+      background-size: contain;
+      animation: rotateHex 30s linear infinite;
+      transform-origin: center;
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes rotateHex {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
     #viewport {
       width: 100vw;
       height: 100vh;
@@ -128,6 +150,7 @@
   </style>
 </head>
 <body>
+  <div class="backgroundHex1"></div>
   <div id="viewport">
     <canvas id="connector-canvas"></canvas>
     <div id="hex-grid"></div>
@@ -262,9 +285,9 @@
       createHex("[0,0]", null, null, "", "", "", "","");
       createHex("[0,1]", "[0,0]", "top", "Automation Upgrades", "Increase Sentry Range By", "+2", "tree" , "1");
       createHex("[0,2]", "[0,1]", "top", "Automation Upgrades", "Doubles the value of Hex Picked up by a Sentry", "", "tree" , "1");
-      createHex("[0,3]", "[0,2]", "top", "Automation Upgrades", "Can now target Super Hex while AFK walking", "", "tree" , "1");
+      createHex("[0,3]", "[0,2]", "top", "Automation Upgrades", "Can now target Super Hex while AFK walking", "", "tree" , "3");
       createHex("[0,4]", "[0,3]", "top", "Automation Upgrades", "Can now obtain Super Pent Mult when obtaining a Super Hex +.005% per", "", "tree" , "3");
-
+      
       createHex("[1,0]", "[0,0]", "right", "Soul Upgrades", "Double Soul Damage", "", "tree" , "1");
       createHex("[1,1]", "[0,1]", "right", "Automation Upgrades", "Auto Collect Pent Tank when full", "", "tree" , "1");
 

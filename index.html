@@ -16,7 +16,11 @@
       background: #141414;
       
       color: white;
+      display:flex;
+      align-items: center;
 
+      flex-direction: column;
+      text-align: center;
       padding: 1em;
       box-shadow: 2px 0 5px rgba(0,0,0,0.2);
     }
@@ -24,7 +28,7 @@
     .sidebar button {
       display: block;
       width: 200px;
-      margin: 10px 0;
+      margin: 4px 0;
       padding: 10px;
       background: #333;
       border: none;
@@ -33,6 +37,8 @@
       font-family: 'Fredoka One', sans-serif;
       font-size: 18px;
       clip-path: polygon(25% 0%, 75% 0%, 95% 50%, 75% 100%, 25% 100%, 5% 50%);
+      position: relative;
+      z-index: 1;
     }
     .sidebar button:hover {
     background: #222; /* darker on hover */
@@ -49,12 +55,37 @@
       width: 100%;
       height: 100%;
     }
-    h2 {
+    .gameTitle h2 {
         text-align: center;
-        font-size: 35px;
-        font-weight: lighter;
-        margin-block-start: 0.0em;
-        margin-block-end: 0.0em;
+        font-size: 26px;
+        margin: 0;
+        position: absolute;
+        top: 48%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    .gameTitle {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      font-weight: lighter;
+      margin-block-start: 0.0em;
+      margin-block-end: 0.0em;
+
+      overflow: hidden;
+    }
+
+    .gameTitle::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 106 92.6"><polygon points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" fill="none" stroke="red" stroke-width="6" stroke-linejoin="round"/></svg>') center/100% 100% no-repeat;
+      animation: rainbowHueRotate 20s linear infinite, rotateHex 30s linear infinite;
+      filter: hue-rotate(0deg);
+      transform-origin: center;
+      z-index: 0;
+      overflow: hidden;
     }
     h1 {
         text-align: center;
@@ -72,27 +103,120 @@
         margin-block-end: 2em;
         color: #444;
     }
+    .collapsible {
+      background-color: #141414;
+      font-family: 'Fredoka One', sans-serif;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      outline: none;
+      font-size: 24px;
+      transition: background-color 0.3s ease;
+      position: relative;
+    }  
+    .content {
+      width: 178px;
+      max-height: 0;
+      transform: translateY(-26px);
+      background-color: #444;
+      clip-path: polygon(0% 0%, 100% 0%,95% 90%, 75% 100%, 25% 100%, 5% 90%);
+      transition: max-height 0.3s ease-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .listButton {
+      scale: 0.8;
+      margin: 1px 0;
+    }
+    .sidebar .listButton:hover {
+      background: #222;
+      scale: 0.85 !important;
+    }
+    .content .listButton {
+      margin: 1px 0;
+    }
+    .collapsible-section {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+    @keyframes rainbowHueRotate {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+    @keyframes rotateHex {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
   </style>
 </head>
 <body>
-
   <div class="sidebar">
-    <h2>Hex Incremental</h2>
-    <h1>Upd 1.93</h1>
-    <h3>(site v0.4.0)</h3>
-    <button onclick="loadPage('upgradeTree.html')">Upgrade Tree</button>
-    <button onclick="loadPage('upgradeTree2.html')">Upgrade Tree 2</button>
+    <div class="gameTitle">
+      <h2>Hex Incremental</h2>
+    </div>
+    <h1>Upd 1.97</h1>
+    <h3>(site v1.0.0)</h3>
+
+    <div class="collapsible-section">
+      <button class="collapsible">Upgrade Trees</button>
+      <div class="content">
+        <div style="margin: 13px;"></div>
+        <button class="listButton" onclick="loadPage('UpgradeTrees/upgradeTree.html')">Upgrade Tree</button>
+        <button class="listButton" onclick="loadPage('UpgradeTrees/upgradeTree2.html')">Upgrade Tree 2</button>
+      </div>
+    </div>
+    <div class="collapsible-section">
+      <button class="collapsible">Content</button>
+      <div class="content">
+        <div style="margin: 13px;"></div>
+        <button class="listButton" onclick="loadPage('Content/resetLayers.html')">Reset Layers</button>
+        <button class="listButton" onclick="loadPage('Content/soulArena.html')">Soul Arena</button>
+        <button class="listButton" onclick="loadPage('Content/track.html')">Track</button>
+        <button class="listButton" onclick="loadPage('Content/plinko.html')">Plinko</button>
+      </div>
+    </div>
+
     <button onclick="loadPage('siteChangelog.html')">Site Changelog</button>
+
   </div>
 
-  <div class="main">
-    <iframe id="pageFrame" src="upgradeTree.html"></iframe>
-  </div>
+    <div class="main">
+      <iframe id="pageFrame" src="UpgradeTrees/upgradeTree.html"></iframe>
+    </div>
 
   <script>
     function loadPage(page) {
       document.getElementById('pageFrame').src = page;
+      localStorage.setItem('lastPage', page);
     }
+    window.addEventListener('DOMContentLoaded', () => {
+      const lastPage = localStorage.getItem('lastPage');
+      document.getElementById('pageFrame').src = lastPage || 'UpgradeTrees/upgradeTree.html';
+    });
+
+    const collapsibles = document.querySelectorAll('.collapsible');
+        collapsibles.forEach(btn => {
+          btn.addEventListener('click', function () {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+              content.style.maxHeight = null;
+            } else {
+              content.style.maxHeight = content.scrollHeight+12 + "px";
+              content.style.height = content.scrollHeight+12 + "px";
+            }
+          });
+        });
   </script>
 
 </body>
