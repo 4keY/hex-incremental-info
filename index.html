@@ -10,7 +10,24 @@
       height: 100vh;
       font-family: 'Fredoka One', sans-serif;
     }
-
+    #funkyBackground{
+      width: 100vw;
+      height: 100vh;
+      background-color: ff0080;
+      position: fixed;
+      z-index: 999;
+      visibility: hidden;
+    }
+    @keyframes disco {
+      0% { background-color: #ff0080; }
+      25% { background-color: #8000ff; }
+      50% { background-color: #00ffff; }
+      75% { background-color: #00ff80; }
+      100% { background-color: #ffff00; }
+    }
+    #funkyBackground.disco {
+      animation: disco 0.75s infinite, shake 0.375s infinite;
+    }
     .sidebar {
       width: 200px;
       background: #141414;
@@ -18,7 +35,7 @@
       color: white;
       display:flex;
       align-items: center;
-
+      overflow: hidden;
       flex-direction: column;
       text-align: center;
       padding: 1em;
@@ -156,16 +173,97 @@
         transform: rotate(360deg);
       }
     }
+    #cirno {
+      position: fixed;
+      bottom: -80px;
+      left: -20px;
+      transition: transform 0.5s ease;
+      z-index: 1000;
+    }
+    @keyframes slowGrow {
+      from {
+        transform: scale(1);
+        bottom: 0;
+        left: 0;
+      }
+      to {
+        transform: scale(8);
+        bottom: 50%;
+        left: 50%;
+      }  
+    }
+    #cirno.grow {
+      animation: slowGrow 24s forwards linear; /* grows over 10 seconds */
+    }
+    #message {
+      position: fixed;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 10px hotpink;
+      animation: pulse 1s infinite;
+      width: 80%;
+      text-align: center;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+    .nine {
+      position: fixed;
+      font-size: 9rem;
+      font-weight: bold;
+      color: #00ffff;
+      text-shadow: 0 0 10px #fff;
+      animation: fadeOut 2s forwards;
+      pointer-events: none;
+    }
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(2);
+      }
+    }
+    .danmaku {
+      position: fixed;
+      left: 100vw;
+      white-space: nowrap;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+      animation: flyLeft linear forwards;
+      pointer-events: none;
+    }
 
+    @keyframes flyLeft {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-150vw);
+      }
+    }
   </style>
 </head>
 <body>
+  <div id="funkyBackground">
+    <div id="message">You have been certified as not smarter than a fairy</div>
+  </div>
   <div class="sidebar">
     <div class="gameTitle">
       <h2>Hex Incremental</h2>
     </div>
     <h1>Upd 1.97</h1>
-    <h3>(site v1.0.0)</h3>
+    <h3>(site v1.0.⑨?)</h3>
 
     <div class="collapsible-section">
       <button class="collapsible">Upgrade Trees</button>
@@ -187,7 +285,8 @@
     </div>
 
     <button onclick="loadPage('siteChangelog.html')">Site Changelog</button>
-
+    <img id="cirno" alt="Cirno" src="Assets/SuperSecretStuff/cirno_fumo.png" width="140px" onclick="funky()"/>
+    <audio id="cirnoMusic" src="Assets/SuperSecretStuff/funky.mp3" loop></audio>
   </div>
 
     <div class="main">
@@ -217,6 +316,130 @@
             }
           });
         });
+
+    const staticImg = "Assets/SuperSecretStuff/cirno_fumo.png"; // your static image
+    const gifImg = "Assets/SuperSecretStuff/cirno.gif";    // your gif
+    const img = document.getElementById("cirno");
+    const audio = document.getElementById("cirnoMusic");
+
+    img.addEventListener("animationend", () => {
+      document.getElementById("funkyBackground").style.visibility="visible";
+      document.getElementById("funkyBackground").classList.add("disco");
+      document.getElementById("funkyBackground").classList.add("shake")
+      setInterval(spawnNine, 375);
+      setInterval(spawnDanmaku, 800);
+    });
+    function funky() {
+
+      img.src = (img.src.includes(staticImg)) ? gifImg : staticImg;
+      if (img.src.includes(staticImg)){
+        img.style.width = "140px";
+        img.style.bottom = "-80px";
+        img.style.left = "-20px"
+        audio.currentTime = 0.5; // rewind to start
+        audio.pause();
+        img.classList.remove("grow");
+        document.getElementById("funkyBackground").style.visibility="hidden";
+      }
+      else{
+        img.style.width = "100px"
+        img.style.bottom = "00px";
+        img.style.left = "0px"
+        audio.play();
+        audio.currentTime = 0.5;
+        img.classList.add("grow");
+      }
+    }
+    function spawnNine() {
+      const nine = document.createElement("div");
+      nine.className = "nine";
+      nine.textContent = "⑨";
+
+      // Random position within viewport
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+
+      nine.style.left = `${x}px`;
+      nine.style.top = `${y}px`;
+
+      document.getElementById("funkyBackground").appendChild(nine);
+
+      // Remove after fade-out
+      setTimeout(() => {
+        nine.remove();
+      }, 2000); // match animation duration
+    }
+    const messages = [
+      "Gyaaahー",
+      "Cirno is the strongest!",
+      "冷たい!",
+      "So, what was I doing, again…?",
+      "I’m Cirno!",
+      "The legendary Super Ice Fairy!",
+      "I’ll cryo‑freeze you together with some English beef!",
+      "⑨ certified",
+      "Hey! Look at me!",
+      "Cirno.exe has stopped working",
+      "Let's spellcard and chill",
+      "Fairy supremacy, deal with it",
+      "Vibe check failed? You’re frozen",
+      "Cirno Fumo can change your life",
+      "FUNKY",
+      "ᗜˬᗜ",
+      "She shouldn’t have evaded taxes",
+      "Your days are numbered",
+      "Baka is the one who is saying baka, you baka!",
+      "Give me ⑨ minutes",
+      "'I can't believe there's someone even more idiot than me' - Okuu",
+      "'Cirno the ice fairy shot dead in Chicago'",
+      "'I, Cirno Ciovanna, have a dream'",
+      "BABE PLEASE STOP YOU'RE NOT A FUMO",
+      "SCP-6959 - factchecked casual",
+      "Lake Fairy Crew did nothing wrong",
+      "This image brings back memories…",
+      "Oh my god, Cirno don’t say that!",
+      "Wait… is water just hot ice?",
+      "I legally cannot be held responsible",
+      "I studied under no one and it shows",
+      "I took damage, but emotionally I dodged",
+      "Every mistake was on purpose",
+      "Danmaku? I call it glitter warfare",
+      "I went left because it felt like up",
+      "This isn't stupidity—it's ✨creative miscalculation✨",
+      "This is my ⑨th breakdown today",
+      "Me when the braincell arrives: ᗜˬᗜ",
+      "My lawyer advised me not to cast that spell",
+      "Currently being sued by Reimu for war crimes",
+      "Local fairy defeats capitalism with ice",
+      "‘I can fix her,’ says Cirno about Utsuho",
+      "I tried to download spellcards and caught a virus",
+      "Officially uninvited from the Scarlet Devil Mansion (again)",
+      "Lake Fairy Crew Mixtape drops Friday",
+      "I didn’t mean to cast that, but now I’m committed",
+      "Just casted Frost Missile inside my own house",
+      "Wanted in 3 regions for freezing someone’s tea",
+      "I invented ice. Trust me",
+      "'I’m not allowed near the Moriya Shrine anymore' - Cirno",
+      "This was approved by nobody, especially not Yukari"
+    ];
+
+    function spawnDanmaku() {
+      const msg = document.createElement("div");
+      msg.className = "danmaku";
+      msg.textContent = messages[Math.floor(Math.random() * messages.length)];
+
+      const y = Math.random() * window.innerHeight * 0.96; // not too low
+      msg.style.top = `${y}px`;
+      msg.style.right = '-10%'
+
+      const duration = 5 + Math.random() * 6;
+      msg.style.animationDuration = `${duration}s`;
+
+      document.getElementById("funkyBackground").appendChild(msg);
+
+      setTimeout(() => msg.remove(), duration * 1000);
+    }
+
   </script>
 
 </body>
