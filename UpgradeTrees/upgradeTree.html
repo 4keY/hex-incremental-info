@@ -20,8 +20,8 @@
       position: fixed;
       width: 2000px; /* size of hex area */
       height: 2000px;
-      top: -100%; /* adjust to move vertically */
-      right: -40%; /* adjust to move horizontally */
+      top: -100vh; /* adjust to move vertically */
+      right: -40vw; /* adjust to move horizontally */
       background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 106 92.6"><polygon points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" fill="none" stroke="aqua" stroke-width="1" stroke-linejoin="round"/></svg>') no-repeat center;
       background-size: contain;
       animation: rotateHex 30s linear infinite;
@@ -231,6 +231,65 @@
 
     viewport.addEventListener("mouseup", () => isDragging = false);
     viewport.addEventListener("mouseleave", () => isDragging = false);
+    let lastTouchDist = null;
+
+viewport.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 1) {
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  } else if (e.touches.length === 2) {
+    isDragging = false;
+    lastTouchDist = getTouchDistance(e.touches[0], e.touches[1]);
+  }
+});
+
+viewport.addEventListener("touchmove", (e) => {
+  e.preventDefault(); // Prevent scrolling
+
+  if (e.touches.length === 1 && isDragging) {
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
+    offsetX += x - startX;
+    offsetY += y - startY;
+    startX = x;
+    startY = y;
+    applyTransform();
+  } else if (e.touches.length === 2) {
+    const newDist = getTouchDistance(e.touches[0], e.touches[1]);
+    if (lastTouchDist !== null) {
+      const zoomAmount = (newDist - lastTouchDist) * 0.005;
+      const newScale = Math.min(Math.max(scale + zoomAmount, 0.2), 3);
+      
+      // Zoom around midpoint between fingers
+      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const rect = grid.getBoundingClientRect();
+      const rx = mx - rect.left;
+      const ry = my - rect.top;
+      offsetX -= rx * (newScale - scale);
+      offsetY -= ry * (newScale - scale);
+      scale = newScale;
+      applyTransform();
+    }
+    lastTouchDist = newDist;
+  }
+}, { passive: false });
+
+viewport.addEventListener("touchend", (e) => {
+  if (e.touches.length < 2) {
+    lastTouchDist = null;
+  }
+  if (e.touches.length === 0) {
+    isDragging = false;
+  }
+});
+
+function getTouchDistance(touch1, touch2) {
+  const dx = touch1.clientX - touch2.clientX;
+  const dy = touch1.clientY - touch2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
 
     function createHex(id, parentId, direction, title, description, description2, costType, costAmount) {
       const parent = document.getElementById(parentId);
